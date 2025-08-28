@@ -9,7 +9,7 @@ export default function WelcomeScreen({ navigation }) {
             <View className="flex-1 bg-[#f2f2f2e0] justify-evenly items-center">
                 <Image source={logo} className="h-[130] w-[110]"></Image>
                 <Button onPress={() => {
-                    navigation.navigate("SigninScreen")
+                    navigation.navigate("SignupScreen")
                 }} title={"Get Started"}></Button>
             </View>
         </ImageBackground>
