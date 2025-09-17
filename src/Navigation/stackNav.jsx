@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CategoriesStore from 'Screens/CategoriesStore.jsx';
 import CategoryStores from 'Screens/CategoryStores.jsx';
 import MapLocationScreen from 'Screens/MapLocationScreen.jsx';
+import AllStoreProducts from 'Screens/AllStoreProducts.jsx';
 
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
@@ -51,6 +52,11 @@ export default function StackNav() {
             name="CategoryStores"
             component={CategoryStores}
             options={{ title: 'Category Stores' }}
+          />
+          <Stack.Screen
+            name="AllStoreProducts"
+            component={AllStoreProducts}
+            options={{ title: 'Store Products' }}
           />
           <Stack.Screen
             name="SearchResult"

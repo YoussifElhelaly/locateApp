@@ -90,7 +90,7 @@ const MapLocationScreen = () => {
       {/* Google Maps with proper configuration */}
       <MapView
         style={styles.map}
-        provider={PROVIDER_GOOGLE} // This will now work with proper setup
+        // provider={PROVIDER_GOOGLE} // This will now work with proper setup
         initialRegion={region}
         showsUserLocation={true}
         showsMyLocationButton={true}
@@ -144,15 +144,15 @@ const MapLocationScreen = () => {
         </View>
 
         <View style={styles.additionalButtons}>
-          <TouchableOpacity style={styles.callButton}>
-            <Text style={styles.callButtonText}>📞 Call Store</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
             <Text style={styles.callButtonText}>← Back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.callButton}>
+            <Text style={styles.callButtonText}>📞 Call Store</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
   additionalButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
+    gap: 8,
   },
   callButton: {
     backgroundColor: '#F3F4F6',

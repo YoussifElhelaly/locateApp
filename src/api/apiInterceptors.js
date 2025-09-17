@@ -31,6 +31,7 @@ export default function InterceptorProvider({ children }) {
                 });
                 return false;
             }
+            console.log(error.response);
             return error.response;
         });
         return () => {

@@ -1,4 +1,4 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import BackButton from 'components/BackButton.jsx';
 import LoadingSpinner from 'components/LoadingSpinner.jsx';
@@ -10,6 +10,7 @@ import { ScrollView, Text, View } from 'react-native';
 const CategoryStores = () => {
   const route = useRoute();
   const { categoryId, categoryName } = route.params;
+  const navigate = useNavigation();
 
   const { data: categoryStores, isLoading } = useQuery({
     queryKey: ['categoryStores', categoryId],
@@ -29,7 +30,11 @@ const CategoryStores = () => {
           <ScrollView>
             <View className="mt-5 flex gap-2 flex-wrap">
               {categoryStores?.map(store => (
-                <StoreCard key={store.store_id} data={store} />
+                <StoreCard
+                  key={store.store_id}
+                  data={store}
+                  onPress={() => navigate.navigate('AllStoreProducts')}
+                />
               ))}
             </View>
           </ScrollView>

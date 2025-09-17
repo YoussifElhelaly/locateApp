@@ -12,6 +12,8 @@ import {
   RefreshControl,
   TouchableOpacity,
   Keyboard,
+  TouchableWithoutFeedback,
+  TouchableHighlight,
 } from 'react-native';
 import searchIcon from '../assets/searchIcon.png';
 import { useQuery } from '@tanstack/react-query';
@@ -19,11 +21,14 @@ import { getProducts } from 'features/stores/getProducts';
 import LoadingSpinner from 'components/LoadingSpinner.jsx';
 import { openExternalMaps } from 'utils/helpers.js';
 import BackButton from 'components/BackButton.jsx';
+import notificationIcon from '../assets/notificationIcon.png';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function SearchResult() {
   const navigation = useNavigation();
   const [searchValue, setSearchValue] = useState('');
   const [currentSearchTerm, setCurrentSearchTerm] = useState('');
+  const insets = useSafeAreaInsets();
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['products', currentSearchTerm],
@@ -94,9 +99,10 @@ export default function SearchResult() {
   );
 
   const renderSearchResults = () => (
-    <View className="mb-4 px-5 flex-row items-center gap-2">
+    <View className="mb-4 px-5 flex-row items-center gap-2 mt-3">
       <View className="flex-row items-center justify-between">
-        <View>
+        <View className="flex-row items-center gap-2">
+          <BackButton />
           <Text className="text-xl font-bold text-gray-900">
             {data?.length || 0} {data?.length === 1 ? 'Result' : 'Results'}
           </Text>
@@ -116,12 +122,6 @@ export default function SearchResult() {
           </TouchableOpacity>
         )}
       </View>
-
-      {data?.length > 0 && (
-        <Text className="text-gray-500 text-sm mt-2">
-          Showing available products
-        </Text>
-      )}
     </View>
   );
 
@@ -130,15 +130,24 @@ export default function SearchResult() {
       {isLoading ? (
         <LoadingSpinner />
       ) : (
-        <SafeAreaView className="flex-1 bg-gray-50">
-          <View className="flex-row items-center gap-2">
-            <BackButton />
-            <Text className="font-bold">Back</Text>
-          </View>
-          <View className="px-5 pt-5 pb-2">
-            {/* Professional Search Input */}
-            <View className="w-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-4">
-              <View className="flex-row items-center px-4 py-3">
+        <>
+          <View
+            style={{ paddingTop: insets.top }}
+            className="px-4 bg-mainColor pb-4"
+          >
+            <View className=" gap-2">
+              <View className="flex items-center justify-between flex-row mb-3">
+                <Text className="text-xl font-medium text-white">
+                  Hey, Youssif Elhelaly
+                </Text>
+                <TouchableWithoutFeedback>
+                  <Image
+                    source={notificationIcon}
+                    className="w-6 h-6 text-white"
+                  />
+                </TouchableWithoutFeedback>
+              </View>
+              <View className="flex-row items-center px-4 py-3 bg-white rounded-lg">
                 <Image
                   source={searchIcon}
                   className="w-5 h-5 mr-3 opacity-60"
@@ -210,7 +219,7 @@ export default function SearchResult() {
               renderEmptyState()
             )}
           </ScrollView>
-        </SafeAreaView>
+        </>
       )}
     </>
   );

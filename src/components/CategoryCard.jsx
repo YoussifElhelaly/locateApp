@@ -1,25 +1,58 @@
 // components/CategoryCard.jsx
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { View, Text, Image, ActivityIndicator } from 'react-native';
 
-export default function CategoryCard({ category, isExpanded }) {
+export default function CategoryCard({ category, isExpanded, isLoading }) {
+  const defaultImage =
+    'https://stores.altarekit.com/design/admin/assets/media/no_image.jpg';
+
   return (
-    <View
-      className={`flex-row items-center p-4 bg-white rounded-lg shadow-sm border ${isExpanded ? 'border-blue-300 bg-blue-50' : 'border-gray-200'}`}
-    >
-      <Image className="w-[60] h-[60] rounded-md mr-4" source={category.icon} />
-      <View className="flex-1">
-        <Text className="text-lg font-semibold text-gray-800">
-          {category.name}
-        </Text>
-        <Text className="text-sm text-gray-500 mt-1">
-          {category.subcategories.length} subcategories
-        </Text>
+    <View className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <View className="flex-row items-center p-4">
+        {/* Category Image */}
+        <View className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 mr-4">
+          <Image
+            source={{ uri: category.img || defaultImage }}
+            className="w-full h-full"
+            resizeMode="cover"
+            defaultSource={{ uri: defaultImage }}
+          />
+        </View>
+
+        {/* Category Info */}
+        <View className="flex-1">
+          <Text className="text-lg font-semibold text-gray-900 mb-1">
+            {category.name}
+          </Text>
+
+          {/* Category badges */}
+          <View className="flex-row items-center space-x-2">
+            {category.is_top === 1 && (
+              <View className="bg-blue-100 px-2 py-1 rounded-full">
+                <Text className="text-xs font-medium text-blue-600">
+                  ⭐ Top
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Expand/Collapse Indicator */}
+        <View className="ml-2">
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#3B82F6" />
+          ) : (
+            <View className="w-8 h-8 items-center justify-center">
+              <Text className="text-xl text-gray-600">
+                {isExpanded ? '▲' : '▼'}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
-      {/* Dropdown Arrow */}
-      <View className={`transform ${isExpanded ? 'rotate-180' : 'rotate-0'}`}>
-        <Text className="text-2xl text-gray-400">▼</Text>
-      </View>
+
+      {/* Expanded indicator bar */}
+      {isExpanded && <View className="h-1 bg-blue-500" />}
     </View>
   );
 }
