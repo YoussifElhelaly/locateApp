@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation } from '@tanstack/react-query';
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Button from 'components/Button.jsx';
 import Input from 'components/Input.jsx';
 import { Text, TouchableOpacity, View, Alert } from 'react-native';
-import { signUpUser } from 'features/auth/signUpUser';
+import { clearError, signUpUserAsync } from 'redux/authSlice.js';
 
 // Validation Schema
 const signupValidationSchema = Yup.object().shape({
@@ -22,7 +22,6 @@ const signupValidationSchema = Yup.object().shape({
     .email('Please enter a valid email address')
     .required('Email is required'),
   phone: Yup.string()
-    .matches(/^[\+]?[1-9][\d]{0,15}$/, 'Please enter a valid phone number')
     .min(10, 'Phone number must be at least 10 digits')
     .required('Phone number is required'),
   password: Yup.string()
@@ -35,49 +34,30 @@ const signupValidationSchema = Yup.object().shape({
 
 export default function SignupScreen() {
   const navigate = useNavigation();
+  const dispatch = useDispatch();
+  const { isLoading, error, isAuthenticated } = useSelector(
+    state => state.auth,
+  );
 
-  // useMutation hook for signup
-  const signupMutation = useMutation({
-    mutationFn: ({
-      first_name,
-      last_name,
-      email,
-      phone,
-      password,
-      password_confirmation,
-    }) =>
-      signUpUser(
-        2,
-        first_name,
-        last_name,
-        email,
-        phone,
-        password,
-        password_confirmation,
-      ),
-    onSuccess: data => {
-      Alert.alert('Success', 'Account created successfully!');
-      navigate.navigate('MainApp');
-    },
-    onError: error => {
-      console.log(error);
-      Alert.alert(
-        'Error',
-        error.message || 'Failed to create account. Please try again.',
-      );
-    },
-  });
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error', error);
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   const handleSignup = values => {
-    console.log(values);
-    signupMutation.mutate({
-      first_name: values.first_name,
-      last_name: values.last_name,
-      email: values.email,
-      phone: values.phone,
-      password: values.password,
-      password_confirmation: values.password_confirmation,
-    });
+    dispatch(
+      signUpUserAsync({
+        user_type: 2,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        email: values.email,
+        phone: values.phone,
+        password: values.password,
+        password_confirmation: values.password_confirmation,
+      }),
+    );
   };
 
   return (
@@ -189,11 +169,9 @@ export default function SignupScreen() {
             </Text>
 
             <Button
-              title={
-                signupMutation.isPending ? 'Creating Account...' : 'Sign Up'
-              }
+              title={isLoading ? 'Creating Account...' : 'Sign Up'}
               onPress={handleSubmit}
-              disabled={!isValid || !dirty || signupMutation.isPending}
+              disabled={!isValid || !dirty || isLoading}
             />
           </View>
         )}

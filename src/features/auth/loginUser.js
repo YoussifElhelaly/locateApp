@@ -1,26 +1,14 @@
-export const loginUser = (email, password) => {
-    return async (dispatch) => {
-        try {
-            const response = await fetch("https://reqres.in/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
-            const data = await response.json();
-            if (data.token) {
-                dispatch({ type: "LOGIN_SUCCESS", payload: data.token });
-            } else {
-                dispatch({ type: "LOGIN_FAILURE", payload: data.error });
+import axiosInstance from "api/apiConfig";
 
-            }
-        }
-        catch (error) {
-            dispatch({ type: "LOGIN_FAILURE", payload: error.message });
-        }
-    };
+export const loginUser = async (phone, password) => {
+    try {
+        const params = {
+            phone,
+            password,
+        };
+        const response = await axiosInstance.post("login", params);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };

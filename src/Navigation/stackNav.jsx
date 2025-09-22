@@ -1,37 +1,52 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import HomeScreen from 'Screens/Home.jsx';
 import SigninScreen from 'Screens/Auth/signinScreen.jsx';
+import SignupScreen from 'Screens/Auth/Signup.jsx';
 import WelcomeScreen from 'Screens/welcomeScreen.jsx';
 import TabsNavigation from './tabNav';
 import SearchResult from 'Screens/searchResult.jsx';
 import NavHeader from 'components/navHeader.jsx';
-import SignupScreen from 'Screens/Auth/Signup.jsx';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CategoriesStore from 'Screens/CategoriesStore.jsx';
 import CategoryStores from 'Screens/CategoryStores.jsx';
 import MapLocationScreen from 'Screens/MapLocationScreen.jsx';
 import AllStoreProducts from 'Screens/AllStoreProducts.jsx';
+import SplashScreen from 'Screens/SplashScreen.jsx';
+import { checkAuthAsync } from 'redux/authSlice.js';
 
 const Stack = createNativeStackNavigator();
-const queryClient = new QueryClient();
 
 export default function StackNav() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Stack.Navigator
-        initialRouteName="WelcomeScreen"
-        screenOptions={{
-          header: props => <NavHeader {...props} />,
-        }}
-      >
-        {/* Authentication Stack */}
-        <Stack.Group screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-          <Stack.Screen name="SigninScreen" component={SigninScreen} />
-          <Stack.Screen name="SignupScreen" component={SignupScreen} />
-        </Stack.Group>
+  const dispatch = useDispatch();
+  const { isAuthenticated, isInitialized, isLoading, error } = useSelector(
+    state => state.auth,
+  );
 
-        {/* Main App Stack with Tabs */}
+  useEffect(() => {
+    // Check for existing authentication on app start
+    dispatch(checkAuthAsync());
+  }, [dispatch]);
+
+  // Show splash screen while checking authentication
+  if (!isInitialized || isLoading) {
+    return <SplashScreen />;
+  }
+
+  // Handle authentication errors gracefully
+  if (error && !isAuthenticated) {
+    console.warn('Authentication error:', error);
+  }
+
+  return (
+    <Stack.Navigator
+      initialRouteName={isAuthenticated ? 'MainApp' : 'WelcomeScreen'}
+      screenOptions={{
+        header: props => <NavHeader {...props} />,
+      }}
+    >
+      {isAuthenticated ? (
+        // Authenticated Stack
         <Stack.Group>
           <Stack.Screen
             name="MainApp"
@@ -69,7 +84,14 @@ export default function StackNav() {
             options={{ title: 'Map Location' }}
           />
         </Stack.Group>
-      </Stack.Navigator>
-    </QueryClientProvider>
+      ) : (
+        // Authentication Stack
+        <Stack.Group screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+          <Stack.Screen name="SigninScreen" component={SigninScreen} />
+          <Stack.Screen name="SignupScreen" component={SignupScreen} />
+        </Stack.Group>
+      )}
+    </Stack.Navigator>
   );
 }
