@@ -4,7 +4,7 @@ import { View, Text, Image, ActivityIndicator } from 'react-native';
 
 export default function CategoryCard({ category, isExpanded, isLoading }) {
   const defaultImage =
-    'https://stores.altarekit.com/design/admin/assets/media/no_image.jpg';
+    'https://locate.shinefy.co/design/admin/assets/media/no_image.jpg';
 
   return (
     <View className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">

@@ -16,7 +16,7 @@ const CategoryStores = () => {
     queryKey: ['categoryStores', categoryId],
     queryFn: () => getCategoryStores(categoryId),
   });
-  console.log('categoryStores', categoryStores);
+
   return (
     <>
       {isLoading ? (
@@ -33,7 +33,12 @@ const CategoryStores = () => {
                 <StoreCard
                   key={store.store_id}
                   data={store}
-                  onPress={() => navigate.navigate('AllStoreProducts')}
+                  onPress={() =>
+                    navigate.navigate('AllStoreProducts', {
+                      storeId: store.store_id,
+                      storeName: store.name,
+                    })
+                  }
                 />
               ))}
             </View>

@@ -1,4 +1,5 @@
 // Screens/CartScreen.jsx
+import BackButton from 'components/BackButton.jsx';
 import CartItem from 'components/cart/CartItem.jsx';
 import EmptyCart from 'components/cart/EmptyCart.jsx';
 import React, { useState } from 'react';
@@ -139,7 +140,10 @@ export default function CartScreen({ navigation }) {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       {/* Header */}
       <View className="flex-row justify-between items-center px-5 py-4 bg-white border-b border-gray-200">
-        <Text className="text-gray-900 text-xl font-semibold">Items</Text>
+        <View className="flex-row items-center gap-2">
+          <BackButton />
+          <Text className="text-gray-900 text-xl font-semibold">Items</Text>
+        </View>
         <TouchableOpacity onPress={handleClearCart}>
           <Text className="text-red-500 text-base font-medium">Remove all</Text>
         </TouchableOpacity>

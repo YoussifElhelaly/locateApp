@@ -14,6 +14,8 @@ import MapLocationScreen from 'Screens/MapLocationScreen.jsx';
 import AllStoreProducts from 'Screens/AllStoreProducts.jsx';
 import SplashScreen from 'Screens/SplashScreen.jsx';
 import { checkAuthAsync } from 'redux/authSlice.js';
+import ProductDetails from 'Screens/ProductDetails.jsx';
+import CartScreen from 'Screens/CartScreen.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -72,6 +74,16 @@ export default function StackNav() {
             name="AllStoreProducts"
             component={AllStoreProducts}
             options={{ title: 'Store Products' }}
+          />
+          <Stack.Screen
+            name="ProductDetails"
+            component={ProductDetails}
+            options={{ title: 'Product' }}
+          />
+          <Stack.Screen
+            name="CartScreen"
+            component={CartScreen}
+            options={{ title: 'Cart' }}
           />
           <Stack.Screen
             name="SearchResult"

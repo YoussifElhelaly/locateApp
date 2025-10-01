@@ -1,5 +1,10 @@
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
 import BackButton from 'components/BackButton.jsx';
-import React, { useState } from 'react';
+import LoadingSpinner from 'components/LoadingSpinner.jsx';
+import { getStoreProducts } from 'features/products/getStoreProducts';
+import { getSubCategoryProducts } from 'features/products/getSubCategoryProducts';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,13 +15,15 @@ import {
   Dimensions,
   PermissionsAndroid,
   Platform,
+  Image,
+  FlatList,
 } from 'react-native';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import Svg, { Path, Rect, Circle } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
 
-// Keep all your existing SVG icons...
+// SVG Icons
 const PrescriptionIcon = ({ size = 24, color = '#4A90E2' }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Rect
@@ -66,7 +73,84 @@ const CameraIcon = ({ size = 24, color = '#4A90E2' }) => (
   </Svg>
 );
 
-// Updated Image Picker Modal Component
+// Product Card Component
+const ProductCard = ({ product, onPress }) => {
+  const truncateText = (text, maxLength = 15) => {
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + '...'
+      : text;
+  };
+
+  const hasDiscount =
+    parseFloat(product.product_item_price) >
+    parseFloat(product.product_item_price_after_discount);
+
+  return (
+    <TouchableOpacity
+      onPress={() => onPress(product)}
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 m-2 p-4"
+      style={{ width: (width - 60) / 2 }}
+    >
+      <View className="relative">
+        <Image
+          source={{ uri: product.pro_img_obj }}
+          className="w-full h-32 rounded-xl mb-3"
+          resizeMode="cover"
+        />
+        {product.is_top === 1 && (
+          <View className="absolute top-2 right-2 bg-red-500 px-2 py-1 rounded-full">
+            <Text className="text-white text-xs font-bold">TOP</Text>
+          </View>
+        )}
+        {hasDiscount && (
+          <View className="absolute top-2 left-2 bg-green-500 px-2 py-1 rounded-full">
+            <Text className="text-white text-xs font-bold">SALE</Text>
+          </View>
+        )}
+      </View>
+
+      <Text className="text-gray-800 font-semibold text-sm mb-1">
+        {truncateText(product.product_name)}
+      </Text>
+
+      <Text className="text-gray-500 text-xs mb-2" numberOfLines={2}>
+        {product.product_desc}
+      </Text>
+
+      <View className="flex-row items-center justify-between">
+        <View className="flex-1">
+          {hasDiscount ? (
+            <View>
+              <Text className="text-lg font-bold text-green-600">
+                ${product.product_item_price_after_discount}
+              </Text>
+              <Text className="text-sm text-gray-400 line-through">
+                ${product.product_item_price}
+              </Text>
+            </View>
+          ) : (
+            <Text className="text-lg font-bold text-gray-800">
+              ${product.product_item_price}
+            </Text>
+          )}
+        </View>
+
+        <View className="items-end">
+          <Text className="text-xs text-gray-500">
+            Stock: {product.product_item_quantity}
+          </Text>
+          {product.product_item_quantity_limit && (
+            <Text className="text-xs text-orange-500">
+              Limit: {product.product_item_quantity_limit}
+            </Text>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+// Image Picker Modal Component
 const ImagePickerModal = ({ visible, onClose, onImageSelected }) => {
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -151,7 +235,6 @@ const ImagePickerModal = ({ visible, onClose, onImageSelected }) => {
       <View className="flex-1 bg-black/50 justify-center items-center">
         <View className="bg-white rounded-2xl p-6 mx-8 w-80">
           <Text className="text-2xl font-bold text-center mb-2">Add photo</Text>
-
           <Text className="text-gray-600 text-center mb-8">
             We respect your privacy, any personal data are safe with us.
           </Text>
@@ -189,24 +272,7 @@ const ImagePickerModal = ({ visible, onClose, onImageSelected }) => {
   );
 };
 
-// Keep the rest of your component exactly the same...
-const CategoryButton = ({ title, onPress }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    className="bg-blue-500 rounded-2xl mx-2 mb-4"
-    style={{
-      width: (width - 60) / 3,
-      height: 100,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-  >
-    <Text className="text-white font-semibold text-center text-sm px-2">
-      {title}
-    </Text>
-  </TouchableOpacity>
-);
-
+// Prescription Card Component
 const PrescriptionCard = ({ onUploadPress }) => (
   <View className="bg-gray-100 rounded-2xl p-6 mx-4 mb-6">
     <View className="flex-row items-start mb-4">
@@ -234,54 +300,139 @@ const PrescriptionCard = ({ onUploadPress }) => (
   </View>
 );
 
+// Main Component
 export default function AllStoreProducts() {
   const [showImagePicker, setShowImagePicker] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { storeId, subCategoryId } = route.params;
 
-  const categories = [
-    'Offers',
-    'Made in Egypt',
-    'Bundles & Sets',
-    'Vitamins',
-    'Common symptoms',
-    'Pain relief',
-  ];
+  console.log('storeId:', storeId, 'subCategoryId:', subCategoryId);
+
+  // Always call both hooks but conditionally enable them
+  const { data: storeProducts, isLoading: storeLoading } = useQuery({
+    queryKey: ['getStoreProducts', storeId],
+    queryFn: () => getStoreProducts(storeId),
+    enabled: !!storeId && storeId !== undefined,
+  });
+
+  const { data: subCategoryProducts, isLoading: subCategoryLoading } = useQuery(
+    {
+      queryKey: ['getSubCategoryProducts', subCategoryId],
+      queryFn: () => getSubCategoryProducts(subCategoryId),
+      enabled: !!subCategoryId && subCategoryId !== undefined,
+    },
+  );
+
+  // Determine which data to use and loading state
+  const { products, isLoading, pageTitle } = useMemo(() => {
+    // If we have a storeId, use store products
+    if (storeId) {
+      return {
+        products: storeProducts || [],
+        isLoading: storeLoading,
+        pageTitle: 'Store Products',
+      };
+    }
+
+    // If we have a subCategoryId, use subcategory products
+    if (subCategoryId) {
+      return {
+        products: subCategoryProducts || [],
+        isLoading: subCategoryLoading,
+        pageTitle: 'Category Products',
+      };
+    }
+
+    // Default case
+    return {
+      products: [],
+      isLoading: false,
+      pageTitle: 'Products',
+    };
+  }, [
+    storeId,
+    subCategoryId,
+    storeProducts,
+    subCategoryProducts,
+    storeLoading,
+    subCategoryLoading,
+  ]);
 
   const handleUploadPress = () => {
     setShowImagePicker(true);
   };
 
   const handleImageSelected = image => {
-    setSelectedImage(image);
-    console.log('Selected image:', image);
     Alert.alert('Success', 'Prescription uploaded successfully!');
   };
 
-  const handleCategoryPress = category => {
-    console.log('Category pressed:', category);
+  const handleProductPress = product => {
+    navigation.navigate('ProductDetails', { productDetails: product });
+  };
+
+  // Filter and sort products
+  const sortedProducts = useMemo(() => {
+    if (!products || !Array.isArray(products)) return [];
+
+    return products
+      .filter(product => product.is_active === 1)
+      .sort((a, b) => {
+        if (a.is_top !== b.is_top) {
+          return b.is_top - a.is_top;
+        }
+        return new Date(b.created_at) - new Date(a.created_at);
+      });
+  }, [products]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  // Dynamic key extractor for different product types
+  const getProductKey = (item, index) => {
+    if (item.store_prod_id) return item.store_prod_id.toString();
+    if (item.sub_category_prod_id) return item.sub_category_prod_id.toString();
+    if (item.product_id) return item.product_id.toString();
+    if (item.id) return item.id.toString();
+    return index.toString();
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView
+      className="flex-1 bg-white"
+      showsVerticalScrollIndicator={false}
+    >
       <View className="pt-6">
-        <View className="flex-row items-center gap-2 mb-6">
+        <View className="flex-row items-center gap-2 mb-6 px-4">
           <BackButton />
-          <Text className="text-3xl font-bold text-gray-900">
-            Prescriptions
-          </Text>
+          <Text className="text-3xl font-bold text-gray-900">{pageTitle}</Text>
         </View>
 
         <PrescriptionCard onUploadPress={handleUploadPress} />
 
-        <View className="flex-row flex-wrap justify-center px-4">
-          {categories.map((category, index) => (
-            <CategoryButton
-              key={index}
-              title={category}
-              onPress={() => handleCategoryPress(category)}
+        {/* Products List */}
+        {sortedProducts.length > 0 ? (
+          <View className="mb-6">
+            <Text className="text-xl font-bold text-gray-800 px-4 mb-4">
+              All Products
+            </Text>
+            <FlatList
+              data={sortedProducts}
+              renderItem={({ item }) => (
+                <ProductCard product={item} onPress={handleProductPress} />
+              )}
+              keyExtractor={getProductKey}
+              numColumns={2}
+              columnWrapperStyle={{ justifyContent: 'space-around' }}
+              scrollEnabled={false}
             />
-          ))}
-        </View>
+          </View>
+        ) : (
+          <View className="items-center py-12">
+            <Text className="text-gray-500 text-lg">No products available</Text>
+          </View>
+        )}
       </View>
 
       <ImagePickerModal

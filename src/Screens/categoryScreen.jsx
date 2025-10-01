@@ -15,11 +15,13 @@ import { getMainCategories } from '../features/categories/getMainCategories';
 import { getSubCategories } from '../features/categories/getSubCategories';
 import EmptySubcategories from 'components/categories/EmptySubcategories.jsx';
 import EmptyMainCategories from 'components/categories/EmptyMainCategories.jsx';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CategoryScreen() {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const animationsRef = useRef({});
+  const navigation = useNavigation();
 
   // Fetch main categories
   const {
@@ -172,6 +174,11 @@ export default function CategoryScreen() {
                               <SubcategoryCard
                                 key={subcategory.sub_cat_id}
                                 subcategory={subcategory}
+                                onPress={() =>
+                                  navigation.navigate('AllStoreProducts', {
+                                    subCategoryId: subcategory.sub_cat_id,
+                                  })
+                                }
                               />
                             ))}
                           </View>

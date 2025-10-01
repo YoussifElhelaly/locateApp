@@ -27,12 +27,12 @@ const CategoriesStore = () => {
             <Text className="text-lg font-semibold">{storeName}</Text>
           </View>
           <ScrollView>
-            <View className="mt-5 flex-row gap-2 flex-wrap">
+            <View className="mt-5 flex-row justify-center gap-4 flex-wrap">
               {storeCategories?.map(category => (
                 <CategoryComponent
                   key={category.cat_id}
                   img={category.img}
-                  width={'120px'}
+                  width={120}
                   text={category.name}
                   onPress={() =>
                     navigate.navigate('CategoryStores', {

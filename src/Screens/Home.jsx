@@ -25,13 +25,13 @@ export default function HomeScreen() {
             <Text className="text-lg font-semibold">Main Stores</Text>
           </View>
 
-          <View className="flex-row flex-wrap items-center justify-center gap-5 mt-6 mx-auto">
+          <View className="mt-5 flex-row gap-2 flex-wrap mx-auto w-full">
             {stores?.map(store => (
               <CategoryComponent
                 key={store.store_type_id}
                 img={store.img}
                 text={store.name}
-                width={'40%'}
+                width={'110px'}
                 onPress={() =>
                   navigation.navigate('CategoriesStore', {
                     storeId: store.store_type_id,
