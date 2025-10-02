@@ -18,6 +18,7 @@ const CategoriesStore = () => {
   });
   return (
     <>
+      {/*  */}
       {isLoading ? (
         <LoadingSpinner />
       ) : (
