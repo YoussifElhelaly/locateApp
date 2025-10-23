@@ -8,24 +8,9 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  Dimensions,
   Alert,
 } from 'react-native';
-import Svg, { Path, Circle, Heart, Plus, Minus } from 'react-native-svg';
-
-const { width, height } = Dimensions.get('window');
-
-// SVG Icons
-const HeartIcon = ({ size = 24, color = '#666', filled = false }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path
-      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-      stroke={color}
-      strokeWidth="2"
-      fill={filled ? color : 'none'}
-    />
-  </Svg>
-);
+import Svg, { Path, Circle } from 'react-native-svg';
 
 const PlusIcon = ({ size = 20, color = '#666' }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -213,8 +198,13 @@ const ProductDetails = () => {
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const [cartItems, setCartItems] = useState([]);
 
-  console.log('productDetails', productDetails);
-
+  if (!productDetails) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-gray-600">No product details available</Text>
+      </View>
+    );
+  }
   const hasDiscount =
     parseFloat(productDetails.product_item_price) >
     parseFloat(productDetails.product_item_price_after_discount);
@@ -392,7 +382,9 @@ const ProductDetails = () => {
           </Text>
           {hasDiscount && (
             <Text className="text-lg text-gray-400 line-through">
-              ${productDetails.product_item_price}
+              $
+              {productDetails.product_item_price &&
+                productDetails.product_item_price}
             </Text>
           )}
         </View>

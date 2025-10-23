@@ -13,7 +13,6 @@ import {
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
-  TouchableHighlight,
 } from 'react-native';
 import searchIcon from '../assets/searchIcon.png';
 import { useQuery } from '@tanstack/react-query';
@@ -51,8 +50,7 @@ export default function SearchResult() {
   };
 
   const handleProductPress = product => {
-    console.log('Product pressed:', product.product_name);
-    // navigation.navigate('ProductDetail', { productId: product.product_id });
+    navigation.navigate('ProductDetails', { productDetails: product });
   };
 
   const handleNavigateToLocation = (product, type) => {

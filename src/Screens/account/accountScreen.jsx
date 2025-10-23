@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { Text, View, TouchableOpacity } from 'react-native';
 import Svg, { Path, Circle } from 'react-native-svg';
 
@@ -59,6 +60,25 @@ const SettingsIcon = ({ size = 24, color = '#000' }) => (
   </Svg>
 );
 
+const LogoutIcon = ({ size = 24, color = '#EF4444' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M16 17l5-5m0 0l-5-5m5 5H9"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M13 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
 const ChevronRightIcon = ({ size = 20, color = '#666' }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path d="M9 18l6-6-6-6" stroke={color} strokeWidth="2" />
@@ -75,16 +95,25 @@ const MenuItem = ({ icon: Icon, title, subtitle, onPress }) => (
       <Icon size={24} color="#333" />
     </View>
     <View className="flex-1">
-      <Text className="font-bold text-xl mb-1">{title}</Text>
-      <Text className="text-gray-600">{subtitle}</Text>
+      <Text
+        className={`font-bold text-xl mb-1 ${title === 'Logout' ? 'text-red-500' : 'text-black'}`}
+      >
+        {title}
+      </Text>
+      <Text
+        className={`${title === 'Logout' ? 'text-red-500' : 'text-gray-600'}`}
+      >
+        {subtitle}
+      </Text>
     </View>
-    <ChevronRightIcon />
+    {title !== 'Logout' && <ChevronRightIcon />}
   </TouchableOpacity>
 );
 
 export default function AccountScreen() {
+  const navigation = useNavigation();
   const handlePress = section => {
-    console.log(`Pressed ${section}`);
+    navigation.navigate(section);
   };
 
   return (
@@ -93,7 +122,7 @@ export default function AccountScreen() {
         icon={PersonIcon}
         title="Personal Details"
         subtitle="First name, Last name, mobile number"
-        onPress={() => handlePress('Personal Details')}
+        onPress={() => handlePress('PersonalDetails')}
       />
 
       <MenuItem
@@ -122,6 +151,13 @@ export default function AccountScreen() {
         title="Setting"
         subtitle="Languages, search and nearby"
         onPress={() => handlePress('Setting')}
+      />
+
+      <MenuItem
+        icon={props => <LogoutIcon {...props} color="#EF4444" />}
+        title="Logout"
+        subtitle="Sign out of your account"
+        onPress={() => console.log('Logging out...')} // Replace with actual logout logic
       />
     </View>
   );

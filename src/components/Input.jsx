@@ -12,6 +12,7 @@ export default function Input({
   onSubmitEditing,
   leftIcon,
   className,
+  editiable,
 }) {
   return (
     <View
@@ -28,6 +29,8 @@ export default function Input({
         keyboardType={keyboardType}
         returnKeyType={returnKeyType}
         onSubmitEditing={onSubmitEditing}
+        editable={editiable}
+        readOnly={!editiable}
       />
     </View>
   );
