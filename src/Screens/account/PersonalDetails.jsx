@@ -95,11 +95,6 @@ const PersonalDetails = () => {
           <BackButton />
           <Text className="text-lg font-semibold">Personal Details</Text>
         </View>
-        {!isEditing && (
-          <TouchableOpacity onPress={() => setIsEditing(true)}>
-            <Text className="text-blue-500 font-semibold">Edit</Text>
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* Form */}
@@ -206,6 +201,16 @@ const PersonalDetails = () => {
                 )}
               </View>
 
+              {!isEditing && (
+                <View className="mt-4">
+                  <Button
+                    title="Edit"
+                    onPress={() => setIsEditing(true)}
+                    disabled={updateMutation.isPending}
+                    style={{ backgroundColor: '#gray' }}
+                  />
+                </View>
+              )}
               {/* Action Buttons - Only show when editing */}
               {isEditing && (
                 <View className="flex-row gap-3 mt-4">
