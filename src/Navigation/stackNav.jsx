@@ -17,6 +17,8 @@ import { checkAuthAsync } from 'redux/authSlice.js';
 import ProductDetails from 'Screens/ProductDetails.jsx';
 import CartScreen from 'Screens/CartScreen.jsx';
 import PersonalDetails from 'Screens/account/PersonalDetails.jsx';
+import DeliveryAddress from 'Screens/account/DeliveryAddress.jsx';
+import AddEditAddress from 'Screens/account/AddEditAddress.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -90,6 +92,16 @@ export default function StackNav() {
             name="PersonalDetails"
             component={PersonalDetails}
             options={{ title: 'Personal Details' }}
+          />
+          <Stack.Screen
+            name="DeliveryAddress"
+            component={DeliveryAddress}
+            options={{ title: 'Delivery Address' }}
+          />
+          <Stack.Screen
+            name="AddEditAddress"
+            component={AddEditAddress}
+            options={{ title: 'Add/Edit Address' }}
           />
           <Stack.Screen
             name="SearchResult"

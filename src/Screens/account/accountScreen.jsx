@@ -26,19 +26,6 @@ const LocationIcon = ({ size = 24, color = '#000' }) => (
   </Svg>
 );
 
-const CoinsIcon = ({ size = 24, color = '#000' }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Circle cx="8" cy="8" r="6" stroke={color} strokeWidth="2" />
-    <Path
-      d="M18.09 10.37A6 6 0 1 1 10.37 18.09"
-      stroke={color}
-      strokeWidth="2"
-    />
-    <Path d="M12 8h-4" stroke={color} strokeWidth="2" />
-    <Path d="M8 12h8" stroke={color} strokeWidth="2" />
-  </Svg>
-);
-
 const StarIcon = ({ size = 24, color = '#000' }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
@@ -129,14 +116,7 @@ export default function AccountScreen() {
         icon={LocationIcon}
         title="Delivery address"
         subtitle="Add, edit and delete address"
-        onPress={() => handlePress('Delivery address')}
-      />
-
-      <MenuItem
-        icon={CoinsIcon}
-        title="My LocatePoints"
-        subtitle="Manage your LocatePoints"
-        onPress={() => handlePress('My LocatePoints')}
+        onPress={() => handlePress('DeliveryAddress')}
       />
 
       <MenuItem
