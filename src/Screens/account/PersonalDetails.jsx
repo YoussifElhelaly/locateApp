@@ -6,13 +6,7 @@ import { getPersonalDetails } from 'features/account/getPersonalDetails';
 import { updatePersonalDetails } from 'features/account/updatePersonalDetails';
 import { Formik } from 'formik';
 import React, { useState } from 'react';
-import {
-  Text,
-  View,
-  Alert,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, Alert, ActivityIndicator } from 'react-native';
 import * as Yup from 'yup';
 
 // Validation Schema
