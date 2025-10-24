@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +15,7 @@ import Button from 'components/Button.jsx';
 import Svg, { Path } from 'react-native-svg';
 import { getDeliveryAddresses } from 'features/account/getDeliveryAddresses';
 import { deleteDeliveryAddress } from 'features/account/deleteDeliveryAddress';
+import LoadingSpinner from 'components/LoadingSpinner.jsx';
 
 export const LocationIcon = ({
   width = 24,
@@ -70,6 +72,8 @@ export const DeleteIcon = ({ width = 20, height = 20, color = '#EF4444' }) => {
 const DeliveryAddress = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
 
   // Fetch delivery addresses
   const {
@@ -85,10 +89,13 @@ const DeliveryAddress = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteDeliveryAddress,
     onSuccess: () => {
-      Alert.alert('Success', 'Address deleted successfully');
       queryClient.invalidateQueries({ queryKey: ['deliveryAddresses'] });
+      setDeleteConfirmVisible(false);
+      setAddressToDelete(null);
     },
     onError: error => {
+      setDeleteConfirmVisible(false);
+      setAddressToDelete(null);
       Alert.alert(
         'Error',
         error.response?.data?.msg || 'Failed to delete address',
@@ -96,19 +103,20 @@ const DeliveryAddress = () => {
     },
   });
 
-  const handleDelete = addressId => {
-    Alert.alert(
-      'Delete Address',
-      'Are you sure you want to delete this address?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => deleteMutation.mutate(addressId),
-        },
-      ],
-    );
+  const handleDelete = address => {
+    setAddressToDelete(address);
+    setDeleteConfirmVisible(true);
+  };
+
+  const confirmDelete = () => {
+    if (addressToDelete) {
+      deleteMutation.mutate(addressToDelete.id);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmVisible(false);
+    setAddressToDelete(null);
   };
 
   const handleEdit = address => {
@@ -127,8 +135,8 @@ const DeliveryAddress = () => {
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-white">
-        <ActivityIndicator size="large" color="#D4A051" />
-        <Text className="mt-2 text-gray-600">Loading addresses...</Text>
+        <LoadingSpinner />
+        <Text className="mt-4 text-gray-600">Loading addresses...</Text>
       </View>
     );
   }
@@ -187,7 +195,7 @@ const DeliveryAddress = () => {
                     <EditIcon width={20} height={20} color="#6B7280" />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => handleDelete(address.id)}
+                    onPress={() => handleDelete(address)}
                     className="p-1"
                     disabled={deleteMutation.isPending}
                   >
@@ -209,6 +217,121 @@ const DeliveryAddress = () => {
       <View className="p-5 border-t border-gray-200">
         <Button title="Add Location" onPress={handleAddNew} />
       </View>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={deleteConfirmVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={cancelDelete}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderRadius: 12,
+              padding: 24,
+              width: '85%',
+              maxWidth: 400,
+            }}
+          >
+            {deleteMutation.isPending ? (
+              // Loading State
+              <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+                <ActivityIndicator size="large" color="#D4A051" />
+                <Text
+                  style={{
+                    marginTop: 16,
+                    fontSize: 16,
+                    color: '#4B5563',
+                  }}
+                >
+                  Deleting address...
+                </Text>
+              </View>
+            ) : (
+              // Confirmation State
+              <>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: '600',
+                    color: '#1F2937',
+                    marginBottom: 12,
+                  }}
+                >
+                  Delete Address
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: '#6B7280',
+                    marginBottom: 24,
+                    lineHeight: 20,
+                  }}
+                >
+                  Are you sure you want to delete "{addressToDelete?.label}"?
+                  This action cannot be undone.
+                </Text>
+
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <TouchableOpacity
+                    onPress={cancelDelete}
+                    style={{
+                      flex: 1,
+                      paddingVertical: 12,
+                      paddingHorizontal: 16,
+                      borderRadius: 8,
+                      borderWidth: 1,
+                      borderColor: '#D1D5DB',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: '600',
+                        color: '#6B7280',
+                      }}
+                    >
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={confirmDelete}
+                    style={{
+                      flex: 1,
+                      paddingVertical: 12,
+                      paddingHorizontal: 16,
+                      borderRadius: 8,
+                      backgroundColor: '#EF4444',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: '600',
+                        color: 'white',
+                      }}
+                    >
+                      Delete
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
