@@ -32,9 +32,13 @@ const AddEditAddress = ({ route, navigation }) => {
   const mapRef = useRef(null);
   const scrollViewRef = useRef(null);
 
-  // Safe coordinate extraction with fallbacks
-  const initialLatitude = address?.latitude ?? address?.lat ?? 30.0444;
-  const initialLongitude = address?.longitude ?? address?.lng ?? 31.2357;
+  // Convert string coordinates to numbers (API returns strings)
+  const initialLatitude = address?.latitude
+    ? parseFloat(address.latitude)
+    : 30.0444;
+  const initialLongitude = address?.longitude
+    ? parseFloat(address.longitude)
+    : 31.2357;
 
   const [markerPosition, setMarkerPosition] = useState({
     latitude: initialLatitude,
@@ -108,7 +112,7 @@ const AddEditAddress = ({ route, navigation }) => {
         </View>
       </View>
 
-      {/* Map Section - Fixed Height, No Scroll */}
+      {/* Map Section */}
       <View className="h-64">
         <MapView
           ref={mapRef}
@@ -133,7 +137,7 @@ const AddEditAddress = ({ route, navigation }) => {
         </MapView>
       </View>
 
-      {/* Form Section - Separate ScrollView with KeyboardAvoidingView */}
+      {/* Form Section */}
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -190,6 +194,14 @@ const AddEditAddress = ({ route, navigation }) => {
                         {errors.label}
                       </Text>
                     )}
+                  </View>
+
+                  {/* Instruction */}
+                  <View className="mb-6 p-3 bg-blue-50 rounded-lg">
+                    <Text className="text-xs text-blue-700">
+                      💡 Tap on the map or drag the marker to select your
+                      location
+                    </Text>
                   </View>
 
                   {/* Save Button */}
