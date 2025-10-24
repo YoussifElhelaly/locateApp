@@ -19,6 +19,8 @@ import CartScreen from 'Screens/CartScreen.jsx';
 import PersonalDetails from 'Screens/account/PersonalDetails.jsx';
 import DeliveryAddress from 'Screens/account/DeliveryAddress.jsx';
 import AddEditAddress from 'Screens/account/AddEditAddress.jsx';
+import MyOrders from 'Screens/account/MyOrders.jsx';
+import Settings from 'Screens/account/Settings.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -102,6 +104,16 @@ export default function StackNav() {
             name="AddEditAddress"
             component={AddEditAddress}
             options={{ title: 'Add/Edit Address' }}
+          />
+          <Stack.Screen
+            name="MyOrders"
+            component={MyOrders}
+            options={{ title: 'My Orders' }}
+          />
+          <Stack.Screen
+            name="Settings"
+            component={Settings}
+            options={{ title: 'Settings' }}
           />
           <Stack.Screen
             name="SearchResult"
