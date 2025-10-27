@@ -1,12 +1,13 @@
 // components/CartItem.jsx
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 export default function CartItem({
   item,
   itemNumber,
   onQuantityChange,
   onRemove,
+  isUpdating,
 }) {
   const defaultImage =
     'https://stores.altarekit.com/design/admin/assets/media/no_image.jpg';
@@ -42,7 +43,7 @@ export default function CartItem({
 
           {/* Price */}
           <Text className="text-gray-900 text-lg font-bold">
-            EGP {(item.price * item.quantity).toFixed(2)}
+            EGP {(item.unit_price * item.quantity).toFixed(2)}
           </Text>
         </View>
 
@@ -53,20 +54,26 @@ export default function CartItem({
             onPress={() => onQuantityChange(item.id, item.quantity + 1)}
             className="w-8 h-8 border-2 border-gray-300 rounded-full items-center justify-center mb-2 bg-white"
             activeOpacity={0.7}
+            disabled={isUpdating}
           >
             <Text className="text-gray-700 text-lg font-bold">+</Text>
           </TouchableOpacity>
 
           {/* Current Quantity */}
-          <Text className="text-gray-900 text-base font-semibold mx-2">
-            {item.quantity}
-          </Text>
+          {isUpdating ? (
+            <ActivityIndicator size="small" color="#000000" />
+          ) : (
+            <Text className="text-gray-900 text-base font-semibold mx-2">
+              {item.quantity}
+            </Text>
+          )}
 
           {/* Decrease Button */}
           <TouchableOpacity
             onPress={() => onQuantityChange(item.id, item.quantity - 1)}
             className="w-8 h-8 border-2 border-gray-300 rounded-full items-center justify-center mt-2 bg-white"
             activeOpacity={0.7}
+            disabled={isUpdating}
           >
             <Text className="text-gray-700 text-lg font-bold">-</Text>
           </TouchableOpacity>

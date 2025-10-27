@@ -100,7 +100,6 @@ export default function SearchResult() {
     <View className="mb-4 px-5 flex-row items-center gap-2 mt-3">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
-          <BackButton />
           <Text className="text-xl font-bold text-gray-900">
             {data?.length || 0} {data?.length === 1 ? 'Result' : 'Results'}
           </Text>

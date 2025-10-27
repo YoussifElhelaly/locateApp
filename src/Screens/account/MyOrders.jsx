@@ -9,6 +9,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import BackButton from 'components/BackButton.jsx';
 import Svg, { Path, Rect } from 'react-native-svg';
+import { getOrders } from '../../features/account/getOrders';
 
 // Order Icon
 const OrderIcon = ({ size = 48, color = '#D4A051' }) => (
@@ -32,58 +33,59 @@ const OrderIcon = ({ size = 48, color = '#D4A051' }) => (
 );
 
 const MyOrders = ({ navigation }) => {
-  // Dummy data - replace with actual API call
-  const orders = [
-    {
-      id: 1,
-      order_number: '#ORD-2024-001',
-      date: '2024-10-20',
-      status: 'Delivered',
-      total: '$45.99',
-      items: 3,
-    },
-    {
-      id: 2,
-      order_number: '#ORD-2024-002',
-      date: '2024-10-22',
-      status: 'In Transit',
-      total: '$78.50',
-      items: 5,
-    },
-    {
-      id: 3,
-      order_number: '#ORD-2024-003',
-      date: '2024-10-23',
-      status: 'Processing',
-      total: '$32.00',
-      items: 2,
-    },
-  ];
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ['myOrders'],
+    queryFn: getOrders,
+  });
+
+  const orders = data?.data?.data || [];
 
   const getStatusColor = status => {
     switch (status) {
-      case 'Delivered':
-        return 'bg-green-100 text-green-700';
-      case 'In Transit':
-        return 'bg-blue-100 text-blue-700';
-      case 'Processing':
+      case 0: // Assuming 0 is pending/processing
         return 'bg-yellow-100 text-yellow-700';
-      case 'Cancelled':
+      case 1: // Assuming 1 is delivered
+        return 'bg-green-100 text-green-700';
+      case 2: // Assuming 2 is cancelled
         return 'bg-red-100 text-red-700';
       default:
         return 'bg-gray-100 text-gray-700';
     }
   };
 
+  const getStatusText = status => {
+    switch (status) {
+      case 0:
+        return 'Processing';
+      case 1:
+        return 'Delivered';
+      case 2:
+        return 'Cancelled';
+      default:
+        return 'Unknown';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#D4A051" />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View className="flex-1 justify-center items-center p-5">
+        <Text className="text-red-500 text-lg text-center">
+          Error loading orders: {error.message}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-white">
-      {/* Header */}
-      <View className="flex-row items-center justify-between p-4 border-b border-gray-200">
-        <View className="flex-row items-center gap-2">
-          <BackButton />
-          <Text className="text-lg font-semibold text-gray-800">My Orders</Text>
-        </View>
-      </View>
 
       <ScrollView className="flex-1 p-5">
         {orders.length === 0 ? (
@@ -99,25 +101,24 @@ const MyOrders = ({ navigation }) => {
         ) : (
           orders.map((order, index) => (
             <TouchableOpacity
-              key={order.id || index}
+              key={order.order_id || index}
               className="mb-4 p-4 border border-gray-200 rounded-lg bg-white shadow-sm"
               onPress={() => {
-                // Navigate to order details
-                // navigation.navigate('OrderDetails', { orderId: order.id });
+                navigation.navigate('OrderDetails', { orderId: order.order_id });
               }}
             >
               {/* Order Header */}
               <View className="flex-row items-center justify-between mb-3">
                 <Text className="text-base font-bold text-gray-800">
-                  {order.order_number}
+                  {order.order_no}
                 </Text>
                 <View
-                  className={`px-3 py-1 rounded-full ${getStatusColor(order.status).split(' ')[0]}`}
+                  className={`px-3 py-1 rounded-full ${getStatusColor(order.order_status).split(' ')[0]}`}
                 >
                   <Text
-                    className={`text-xs font-semibold ${getStatusColor(order.status).split(' ')[1]}`}
+                    className={`text-xs font-semibold ${getStatusColor(order.order_status).split(' ')[1]}`}
                   >
-                    {order.status}
+                    {getStatusText(order.order_status)}
                   </Text>
                 </View>
               </View>
@@ -127,19 +128,19 @@ const MyOrders = ({ navigation }) => {
                 <View className="flex-row justify-between">
                   <Text className="text-sm text-gray-600">Date:</Text>
                   <Text className="text-sm text-gray-800 font-medium">
-                    {order.date}
+                    {new Date(order.created_at).toLocaleDateString()}
                   </Text>
                 </View>
                 <View className="flex-row justify-between">
-                  <Text className="text-sm text-gray-600">Items:</Text>
+                  <Text className="text-sm text-gray-600">Store:</Text>
                   <Text className="text-sm text-gray-800 font-medium">
-                    {order.items} items
+                    {order.store_name}
                   </Text>
                 </View>
                 <View className="flex-row justify-between">
                   <Text className="text-sm text-gray-600">Total:</Text>
                   <Text className="text-base text-gray-800 font-bold">
-                    {order.total}
+                    ${parseFloat(order.total_cost).toFixed(2)}
                   </Text>
                 </View>
               </View>

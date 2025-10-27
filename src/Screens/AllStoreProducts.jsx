@@ -404,10 +404,7 @@ export default function AllStoreProducts() {
       showsVerticalScrollIndicator={false}
     >
       <View className="pt-6">
-        <View className="flex-row items-center gap-2 mb-6 px-4">
-          <BackButton />
-          <Text className="text-3xl font-bold text-gray-900">{pageTitle}</Text>
-        </View>
+       
 
         <PrescriptionCard onUploadPress={handleUploadPress} />
 

@@ -23,10 +23,7 @@ const CategoryStores = () => {
         <LoadingSpinner />
       ) : (
         <>
-          <View className="flex-row gap-2 items-center mt-5 pb-5">
-            <BackButton />
-            <Text className="text-lg font-semibold">{categoryName}</Text>
-          </View>
+         
           <ScrollView>
             <View className="mt-5 flex gap-2 flex-wrap">
               {categoryStores?.map(store => (

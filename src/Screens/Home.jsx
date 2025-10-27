@@ -31,7 +31,7 @@ export default function HomeScreen() {
                 key={store.store_type_id}
                 img={store.img}
                 text={store.name}
-                width={'110px'}
+                width={'80px'}
                 onPress={() =>
                   navigation.navigate('CategoriesStore', {
                     storeId: store.store_type_id,

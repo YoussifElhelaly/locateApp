@@ -10,8 +10,9 @@ import notificationIcon from '../assets/notificationIcon.png';
 import searchIcon from '../assets/searchIcon.png';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import BackButton from './BackButton';
 
-export default function NavHeader() {
+export default function NavHeader({ route }) {
   const insets = useSafeAreaInsets();
   const navigate = useNavigation();
   const user = useSelector(state => state.auth.user);
@@ -20,19 +21,25 @@ export default function NavHeader() {
     <View style={{ paddingTop: insets.top }} className="px-4 bg-mainColor pb-4">
       <View className=" gap-2">
         <View className="flex items-center justify-between flex-row mb-3">
-          <Text className="text-xl font-medium text-white">
-            Hey, {user?.full_name || 'Guest'}
-          </Text>
-          <TouchableWithoutFeedback>
-            <Image source={notificationIcon} className="w-6 h-6 text-white" />
-          </TouchableWithoutFeedback>
-        </View>
-        <TouchableHighlight onPress={() => navigate.navigate('SearchResult')}>
-          <View className="w-full text-base bg-white text-gray-700 px-3 py-2 rounded-md flex items-center gap-2 flex-row">
-            <Image source={searchIcon} className="w-6 h-6 text-white" />
-            <Text className="text-gray-400">Search for products</Text>
+          {route.name !== 'Home' ? (
+            <View className="flex-row items-center gap-2 flex-1 justify-between">
+              <BackButton />
+              <Text className="text-xl font-medium text-white mx-auto">{route.name}</Text>
+            </View>
+          ) : (
+            <Text className="text-xl font-medium text-white">
+              Hey, {user?.full_name || 'Guest'}
+            </Text>
+          )}
+          <View className="flex-row gap-4 items-center">
+            <TouchableWithoutFeedback onPress={() => navigate.navigate('SearchResult')}>
+              <Image source={searchIcon} className="w-6 h-6 text-white" />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <Image source={notificationIcon} className="w-6 h-6 text-white" />
+            </TouchableWithoutFeedback>
           </View>
-        </TouchableHighlight>
+        </View>
       </View>
     </View>
   );

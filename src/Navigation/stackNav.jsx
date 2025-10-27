@@ -21,6 +21,8 @@ import DeliveryAddress from 'Screens/account/DeliveryAddress.jsx';
 import AddEditAddress from 'Screens/account/AddEditAddress.jsx';
 import MyOrders from 'Screens/account/MyOrders.jsx';
 import Settings from 'Screens/account/Settings.jsx';
+import CheckoutScreen from 'Screens/CheckoutScreen.jsx';
+import OrderDetails from 'Screens/account/OrderDetails.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -124,6 +126,16 @@ export default function StackNav() {
             name="MapLocationScreen"
             component={MapLocationScreen}
             options={{ title: 'Map Location' }}
+          />
+          <Stack.Screen
+            name="Checkout"
+            component={CheckoutScreen}
+            options={{ title: 'Checkout' }}
+          />
+          <Stack.Screen
+            name="OrderDetails"
+            component={OrderDetails}
+            options={{ title: 'Order Details' }}
           />
         </Stack.Group>
       ) : (

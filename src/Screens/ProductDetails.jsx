@@ -127,12 +127,7 @@ const ProductDetails = () => {
       showsVerticalScrollIndicator={false}
     >
       {/* Header */}
-      <View className="flex-row items-center gap-2 p-4">
-        <BackButton />
-        <Text className="text-xl font-semibold text-gray-800">
-          Product Details
-        </Text>
-      </View>
+     
 
       {/* Product Image */}
       <View className="relative">

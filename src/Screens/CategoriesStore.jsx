@@ -23,17 +23,14 @@ const CategoriesStore = () => {
         <LoadingSpinner />
       ) : (
         <View>
-          <View className="flex-row items-center gap-2 mt-3">
-            <BackButton />
-            <Text className="text-lg font-semibold">{storeName}</Text>
-          </View>
+          
           <ScrollView>
-            <View className="mt-5 flex-row justify-center gap-4 flex-wrap">
+            <View className="mt-5 flex-row justify-center gap-2 flex-wrap">
               {storeCategories?.map(category => (
                 <CategoryComponent
                   key={category.cat_id}
                   img={category.img}
-                  width={120}
+                  width={115}
                   text={category.name}
                   onPress={() =>
                     navigate.navigate('CategoryStores', {
