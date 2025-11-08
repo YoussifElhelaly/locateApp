@@ -14,6 +14,7 @@ export default function InterceptorProvider({ children }) {
             (config) => {
                 // Add token to Authorization header if it exists
                 if (token) {
+                    console.log(token)
                     config.headers.Authorization = `Bearer ${token}`;
                 }
                 return config;
@@ -75,7 +76,7 @@ export default function InterceptorProvider({ children }) {
                     });
                 }
 
-                console.log('API Error:', error.response);
+                console.log('API Error:', error);
                 return Promise.reject(error);
             }
         );

@@ -107,6 +107,17 @@ android {
     }
 }
 
+
+configurations.all {
+    resolutionStrategy {
+        // Exclude the problematic older support library that conflicts with AndroidX core
+        exclude group: "com.android.support", module: "support-compat"
+        
+        // This is often also a good idea to prevent other v4 conflicts
+        exclude group: "com.android.support", module: "support-v4" 
+    }
+}
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")

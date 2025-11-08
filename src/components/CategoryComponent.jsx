@@ -19,10 +19,10 @@ export default function CategoryComponent({ img, text, onPress, width }) {
   const maxTextLength = getDynamicMaxLength(width);
 
   return (
-    <TouchableHighlight underlayColor={"transparent"} onPress={onPress} style={{ width: width }}>
-      <View style={{ alignItems: 'center', overflow: 'hidden' }}>
+    <TouchableHighlight underlayColor={"transparent"} onPress={onPress} style={{ width: width }} className='mx-2'>
+      <View style={{ alignItems: 'center', }} className='flex-1 '>
         <Image
-          className="size-[80px] rounded-full mb-3"
+          className="size-[80px] rounded-full mb-2"
           source={{
             uri: img,
           }}
@@ -31,11 +31,12 @@ export default function CategoryComponent({ img, text, onPress, width }) {
           style={{
             textAlign: 'center',
             fontWeight: 'bold',
-            color: '#000000',
-            flex:1
-   
+            color: '#000',
+            width:"100%",
+            fontSize:12,
+            flex:1,
+
           }}
-        
         >
           {text}
         </Text>

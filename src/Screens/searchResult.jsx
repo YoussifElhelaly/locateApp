@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import SearchCard from 'components/searchCard.jsx';
 import { useLayoutEffect } from 'react';
 import {
@@ -22,11 +21,12 @@ import { openExternalMaps } from 'utils/helpers.js';
 import BackButton from 'components/BackButton.jsx';
 import notificationIcon from '../assets/notificationIcon.png';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+import { useNavigation, useRoute } from '@react-navigation/native';
 export default function SearchResult() {
+  const route = useRoute()
   const navigation = useNavigation();
-  const [searchValue, setSearchValue] = useState('');
-  const [currentSearchTerm, setCurrentSearchTerm] = useState('');
+  const [searchValue, setSearchValue] = useState(route.params?.searchValue ? route.params?.searchValue : '');
+  const [currentSearchTerm, setCurrentSearchTerm] = useState(route.params?.searchValue ? route.params?.searchValue : "");
   const insets = useSafeAreaInsets();
 
   const { data, isLoading, refetch } = useQuery({
@@ -34,10 +34,6 @@ export default function SearchResult() {
     queryFn: () => getProducts(currentSearchTerm),
   });
 
-  // Initial load with empty search
-  useEffect(() => {
-    setCurrentSearchTerm('');
-  }, []);
 
   const handleSearchSubmit = () => {
     setCurrentSearchTerm(searchValue.trim());
@@ -66,16 +62,12 @@ export default function SearchResult() {
     }
   };
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, [navigation]);
+
 
   const renderEmptyState = () => (
-    <View className="flex-1 justify-center items-center py-20">
+    <View className="flex-1 justify-center items-center">
       <View className="items-center">
-        <Text className="text-6xl mb-4">🔍</Text>
+        <Text className="text-6xl mb-4 p-2">🔍</Text>
         <Text className="text-gray-500 text-lg mb-2 font-medium">
           {currentSearchTerm ? 'No products found' : 'Start your search'}
         </Text>
@@ -92,6 +84,11 @@ export default function SearchResult() {
             <Text className="text-blue-600 font-medium">Clear Search</Text>
           </TouchableOpacity>
         )}
+        <TouchableOpacity
+          onPress={() => handleNavigateToLocation(product, 'external')}
+          className="mt-4 bg-green-100 px-4 py-2 rounded-lg"
+        >
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -118,6 +115,15 @@ export default function SearchResult() {
             <Text className="text-gray-600 text-sm font-medium">Clear</Text>
           </TouchableOpacity>
         )}
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('AllStoresMap', {
+              stores: data,
+            });
+          }}
+        >
+          <Text className="text-mainColor font-medium">View Map</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -129,28 +135,16 @@ export default function SearchResult() {
       ) : (
         <>
           <View
-            style={{ paddingTop: insets.top }}
             className="px-4 bg-mainColor pb-4"
           >
             <View className=" gap-2">
-              <View className="flex items-center justify-between flex-row mb-3">
-                <Text className="text-xl font-medium text-white">
-                  Hey, Youssif Elhelaly
-                </Text>
-                <TouchableWithoutFeedback>
-                  <Image
-                    source={notificationIcon}
-                    className="w-6 h-6 text-white"
-                  />
-                </TouchableWithoutFeedback>
-              </View>
               <View className="flex-row items-center px-4 py-3 bg-white rounded-lg">
                 <Image
                   source={searchIcon}
                   className="w-5 h-5 mr-3 opacity-60"
                 />
                 <TextInput
-                  className="flex-1 text-base text-gray-700"
+                  className="flex-1 py-3 text-gray-700 "
                   placeholder="Search for products"
                   placeholderTextColor="#9CA3AF"
                   keyboardType="web-search"
@@ -179,7 +173,7 @@ export default function SearchResult() {
                   activeOpacity={0.8}
                   disabled={!searchValue.trim()}
                   style={{
-                    backgroundColor: searchValue.trim() ? '#2563eb' : '#94a3b8',
+                    backgroundColor: searchValue.trim() ? '#327eb6' : '#94a3b8',
                   }}
                 >
                   <Text className="text-white font-semibold text-sm">

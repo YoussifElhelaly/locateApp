@@ -56,7 +56,7 @@ const ScrollableAds = () => {
   );
 
   return (
-    <View className="mt-10">
+    <View className="mt-2">
       <FlatList
         ref={flatListRef}
         data={infiniteAds}

@@ -23,6 +23,9 @@ import MyOrders from 'Screens/account/MyOrders.jsx';
 import Settings from 'Screens/account/Settings.jsx';
 import CheckoutScreen from 'Screens/CheckoutScreen.jsx';
 import OrderDetails from 'Screens/account/OrderDetails.jsx';
+import AllStores from 'Screens/allStores.jsx';
+import AllStoresMap from 'Screens/allStoresMap.jsx';
+import AllTopProductsScreen from 'Screens/allTopProducts.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -136,6 +139,21 @@ export default function StackNav() {
             name="OrderDetails"
             component={OrderDetails}
             options={{ title: 'Order Details' }}
+          />
+          <Stack.Screen
+            name="AllStores"
+            component={AllStores}
+            options={{ title: 'All Stores' }}
+          />
+          <Stack.Screen
+            name="AllStoresMap"
+            component={AllStoresMap}
+            options={{ title: 'All Stores' }}
+          />
+          <Stack.Screen
+            name="AllTopProductsScreen"
+            component={AllTopProductsScreen}
+            options={{ title: 'Top Products' }}
           />
         </Stack.Group>
       ) : (

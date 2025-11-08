@@ -74,7 +74,7 @@ const CameraIcon = ({ size = 24, color = '#4A90E2' }) => (
 );
 
 // Product Card Component
-const ProductCard = ({ product, onPress }) => {
+export const ProductCard = ({ product, onPress }) => {
   const truncateText = (text, maxLength = 15) => {
     return text.length > maxLength
       ? text.substring(0, maxLength) + '...'
@@ -305,8 +305,8 @@ export default function AllStoreProducts() {
   const [showImagePicker, setShowImagePicker] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
-  const { storeId, subCategoryId } = route.params;
-
+  const { storeId, subCategoryId, typeName } = route.params;
+console.log(typeName )
   console.log('storeId:', storeId, 'subCategoryId:', subCategoryId);
 
   // Always call both hooks but conditionally enable them
@@ -404,9 +404,11 @@ export default function AllStoreProducts() {
       showsVerticalScrollIndicator={false}
     >
       <View className="pt-6">
-       
+        {
+          typeName == "Pharmacy" &&
+          <PrescriptionCard onUploadPress={handleUploadPress} />
+        }
 
-        <PrescriptionCard onUploadPress={handleUploadPress} />
 
         {/* Products List */}
         {sortedProducts.length > 0 ? (

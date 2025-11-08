@@ -90,7 +90,8 @@ const MapLocationScreen = () => {
       {/* Google Maps with proper configuration */}
       <MapView
         style={styles.map}
-        // provider={PROVIDER_GOOGLE} // This will now work with proper setup
+        
+        //provider={PROVIDER_GOOGLE} // This will now work with proper setup
         initialRegion={region}
         showsUserLocation={true}
         showsMyLocationButton={true}
