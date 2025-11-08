@@ -8,10 +8,10 @@ import * as Yup from 'yup';
 import { useEffect } from 'react';
 import { clearError, loginUserAsync } from 'redux/authSlice.js';
 
-// Validation Schema
+// Validation Schema for Saudi phone number
 const signinValidationSchema = Yup.object().shape({
   phone: Yup.string()
-    .min(10, 'Phone number must be at least 10 digits')
+    .matches(/^5[0-9]{8}$/, 'Phone number must be 9 digits starting with 5 (e.g., 512345678)')
     .required('Phone number is required'),
   password: Yup.string()
     .min(8, 'Password must be at least 8 characters')
@@ -33,7 +33,7 @@ export default function SigninScreen() {
   const handleSignin = async values => {
     dispatch(
       loginUserAsync({
-        phone: values.phone,
+        phone: `+966${values.phone}`, // Add country code to phone number
         password: values.password,
       }),
     );
@@ -63,12 +63,17 @@ export default function SigninScreen() {
           dirty,
         }) => (
           <View>
-            <Input
-              placeholder="Phone number"
-              value={values.phone}
-              onChangeText={handleChange('phone')}
-              onBlur={handleBlur('phone')}
-            />
+            <View className="flex-row items-center border bg-gray-200 border-gray-300 rounded-lg px-3 mb-4">
+              <Text className="text-gray-700 font-medium mr-2">+966</Text>
+              <Input
+                placeholder="5XXXXXXXX"
+                value={values.phone}
+                onChangeText={handleChange('phone')}
+                onBlur={handleBlur('phone')}
+                keyboardType="phone-pad"
+                className="flex-1 border-0 p-0 m-0"
+              />
+            </View>
             {errors.phone && touched.phone && (
               <Text className="text-red-500 text-sm ml-3 mb-2">
                 {errors.phone}
