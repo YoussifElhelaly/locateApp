@@ -38,11 +38,16 @@ export default function CategoryScreen() {
     data: subCategoriesData,
     isLoading: isLoadingSubCategories,
     refetch: refetchSubCategories,
+    isError
   } = useQuery({
     queryKey: ['subCategories', expandedCategory],
     queryFn: () => getSubCategories(expandedCategory),
     enabled: !!expandedCategory, // Only fetch when category is expanded
   });
+
+  console.log(subCategoriesData)
+  console.log(isError)
+
 
   // Initialize animations when categories data loads
   useEffect(() => {
@@ -124,16 +129,18 @@ export default function CategoryScreen() {
           <View key={category.cat_id} className="mb-4">
             {/* Main Category */}
             <TouchableOpacity
-              onPress={() => toggleCategory(category.cat_id)}
+             
               className="mb-3"
               activeOpacity={0.8}
             >
               <CategoryCard
+              navigation={navigation}
                 category={category}
                 isExpanded={expandedCategory === category.cat_id}
                 isLoading={
                   isLoadingSubCategories && expandedCategory === category.cat_id
                 }
+                toggleCategory={toggleCategory}
               />
             </TouchableOpacity>
 

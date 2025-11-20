@@ -11,7 +11,7 @@ import { clearError, loginUserAsync } from 'redux/authSlice.js';
 // Validation Schema for Saudi phone number
 const signinValidationSchema = Yup.object().shape({
   phone: Yup.string()
-    .matches(/^5[0-9]{8}$/, 'Phone number must be 9 digits starting with 5 (e.g., 512345678)')
+    // .matches(/^5[0-9]{8}$/, 'Phone number must be 9 digits starting with 5 (e.g., 512345678)')
     .required('Phone number is required'),
   password: Yup.string()
     .min(8, 'Password must be at least 8 characters')
@@ -33,7 +33,7 @@ export default function SigninScreen() {
   const handleSignin = async values => {
     dispatch(
       loginUserAsync({
-        phone: `+966${values.phone}`, // Add country code to phone number
+        phone: `${values.phone}`, // Add country code to phone number
         password: values.password,
       }),
     );

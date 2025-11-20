@@ -15,7 +15,7 @@ const MapLocationScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { product } = route.params;
-
+  console.log(product)
   const [region, setRegion] = useState({
     latitude: parseFloat(product.lat) || 37.78825,
     longitude: parseFloat(product.long) || -122.4324,
@@ -124,7 +124,7 @@ const MapLocationScreen = () => {
           <Text style={styles.price}>
             {product.product_item_price_after_discount ||
               product.product_item_price}{' '}
-            EGP
+            ⃁
           </Text>
         </View>
 

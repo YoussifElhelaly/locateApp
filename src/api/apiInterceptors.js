@@ -76,8 +76,8 @@ export default function InterceptorProvider({ children }) {
                     });
                 }
 
-                console.log('API Error:', error);
-                return Promise.reject(error);
+                console.log('API Error:', error.response);
+                return Promise.reject(error.response);
             }
         );
 

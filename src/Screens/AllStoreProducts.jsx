@@ -5,6 +5,7 @@ import LoadingSpinner from 'components/LoadingSpinner.jsx';
 import { getStoreProducts } from 'features/products/getStoreProducts';
 import { getSubCategoryProducts } from 'features/products/getSubCategoryProducts';
 import React, { useState, useMemo } from 'react';
+import CurrencyText from 'components/CurrencyText.jsx';
 import {
   View,
   Text,
@@ -74,7 +75,7 @@ const CameraIcon = ({ size = 24, color = '#4A90E2' }) => (
 );
 
 // Product Card Component
-export const ProductCard = ({ product, onPress }) => {
+export const ProductCard = ({ product, onPress ,navigation }) => {
   const truncateText = (text, maxLength = 15) => {
     return text.length > maxLength
       ? text.substring(0, maxLength) + '...'
@@ -86,9 +87,13 @@ export const ProductCard = ({ product, onPress }) => {
     parseFloat(product.product_item_price_after_discount);
 
   return (
+
     <TouchableOpacity
-      onPress={() => onPress(product)}
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 m-2 p-4"
+      onPress={() => {
+        console.log("pressed")
+        navigation.navigate('ProductDetails', { productDetails: product });
+      }}
+    className="bg-white rounded-2xl shadow-sm border border-gray-100 m-2 p-4"
       style={{ width: (width - 60) / 2 }}
     >
       <View className="relative">
@@ -121,17 +126,20 @@ export const ProductCard = ({ product, onPress }) => {
         <View className="flex-1">
           {hasDiscount ? (
             <View>
-              <Text className="text-lg font-bold text-green-600">
-                ${product.product_item_price_after_discount}
-              </Text>
-              <Text className="text-sm text-gray-400 line-through">
-                ${product.product_item_price}
-              </Text>
+              <CurrencyText 
+                amount={product.product_item_price_after_discount}
+                className="text-lg font-bold text-green-600"
+              />
+              <CurrencyText 
+                amount={product.product_item_price}
+                className="text-sm text-gray-400 line-through"
+              />
             </View>
           ) : (
-            <Text className="text-lg font-bold text-gray-800">
-              ${product.product_item_price}
-            </Text>
+            <CurrencyText 
+              amount={product.product_item_price}
+              className="text-lg font-bold text-gray-800"
+            />
           )}
         </View>
 
@@ -305,7 +313,7 @@ export default function AllStoreProducts() {
   const [showImagePicker, setShowImagePicker] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
-  const { storeId, subCategoryId, typeName } = route.params;
+  const { storeId, subCategoryId, typeName,isMainCategory } = route.params;
 console.log(typeName )
   console.log('storeId:', storeId, 'subCategoryId:', subCategoryId);
 
@@ -316,13 +324,15 @@ console.log(typeName )
     enabled: !!storeId && storeId !== undefined,
   });
 
-  const { data: subCategoryProducts, isLoading: subCategoryLoading } = useQuery(
+  const { data: subCategoryProducts, isLoading: subCategoryLoading , isError } = useQuery(
     {
       queryKey: ['getSubCategoryProducts', subCategoryId],
-      queryFn: () => getSubCategoryProducts(subCategoryId),
+      queryFn: () => getSubCategoryProducts(subCategoryId ,isMainCategory),
       enabled: !!subCategoryId && subCategoryId !== undefined,
     },
   );
+
+  console.log(subCategoryProducts ,isError)
 
   // Determine which data to use and loading state
   const { products, isLoading, pageTitle } = useMemo(() => {
@@ -358,7 +368,7 @@ console.log(typeName )
     storeLoading,
     subCategoryLoading,
   ]);
-
+  console.log(products)
   const handleUploadPress = () => {
     setShowImagePicker(true);
   };
@@ -376,7 +386,7 @@ console.log(typeName )
     if (!products || !Array.isArray(products)) return [];
 
     return products
-      .filter(product => product.is_active === 1)
+      .filter(product => product.is_active === 1 || product.product_is_active === 1)
       .sort((a, b) => {
         if (a.is_top !== b.is_top) {
           return b.is_top - a.is_top;
@@ -385,6 +395,7 @@ console.log(typeName )
       });
   }, [products]);
 
+  console.log(sortedProducts)
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -419,11 +430,11 @@ console.log(typeName )
             <FlatList
               data={sortedProducts}
               renderItem={({ item }) => (
-                <ProductCard product={item} onPress={handleProductPress} />
+                <ProductCard product={item} onPress={handleProductPress}  navigation={navigation}/>
               )}
               keyExtractor={getProductKey}
               numColumns={2}
-              columnWrapperStyle={{ justifyContent: 'space-around' }}
+              columnWrapperStyle={{ justifyContent: 'start' , gap : 3 }}
               scrollEnabled={false}
             />
           </View>

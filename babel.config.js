@@ -1,7 +1,6 @@
 module.exports = {
   presets: ['module:@react-native/babel-preset', 'nativewind/babel'],
   plugins: [
-    'react-native-reanimated/plugin',
     [
       'module-resolver',
       {
@@ -13,6 +12,7 @@ module.exports = {
           '@screens': './src/Screens',
         },
       },
-    ] // This comes from the main package now
+    ], // This comes from the main package now
+      'react-native-worklets/plugin',
   ],
 };

@@ -1,8 +1,8 @@
 // components/CategoryCard.jsx
 import React from 'react';
-import { View, Text, Image, ActivityIndicator } from 'react-native';
+import { View, Text, Image, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 
-export default function CategoryCard({ category, isExpanded, isLoading }) {
+export default function CategoryCard({ category, isExpanded, isLoading, toggleCategory , navigation }) {
   const defaultImage =
     'https://locate.shinefy.co/design/admin/assets/media/no_image.jpg';
 
@@ -20,10 +20,18 @@ export default function CategoryCard({ category, isExpanded, isLoading }) {
         </View>
 
         {/* Category Info */}
+
         <View className="flex-1">
+        <TouchableWithoutFeedback  onPress={() =>
+                                  navigation.navigate('AllStoreProducts', {
+                                    subCategoryId: category.cat_id,
+                                    isMainCategory: true,
+                                  })
+                                }>
           <Text className="text-lg font-semibold text-gray-900 mb-1">
             {category.name}
           </Text>
+        </TouchableWithoutFeedback>
 
           {/* Category badges */}
           <View className="flex-row items-center space-x-2">
@@ -38,6 +46,8 @@ export default function CategoryCard({ category, isExpanded, isLoading }) {
         </View>
 
         {/* Expand/Collapse Indicator */}
+          <TouchableWithoutFeedback  onPress={() => toggleCategory(category.cat_id)}>
+
         <View className="ml-2">
           {isLoading ? (
             <ActivityIndicator size="small" color="#3B82F6" />
@@ -49,6 +59,8 @@ export default function CategoryCard({ category, isExpanded, isLoading }) {
             </View>
           )}
         </View>
+          </TouchableWithoutFeedback>
+
       </View>
 
       {/* Expanded indicator bar */}

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import BackButton from 'components/BackButton.jsx';
+import CurrencyText from 'components/CurrencyText.jsx';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { getOrders } from '../../features/account/getOrders';
 
@@ -139,9 +140,10 @@ const MyOrders = ({ navigation }) => {
                 </View>
                 <View className="flex-row justify-between">
                   <Text className="text-sm text-gray-600">Total:</Text>
-                  <Text className="text-base text-gray-800 font-bold">
-                    ${parseFloat(order.total_cost).toFixed(2)}
-                  </Text>
+                  <CurrencyText 
+                    amount={order.total_cost}
+                    className="text-base text-gray-800 font-bold"
+                  />
                 </View>
               </View>
 

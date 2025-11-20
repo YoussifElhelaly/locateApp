@@ -5,7 +5,7 @@ import { getTopProducts } from "features/products/getTopProducts.js";
 import { FlatList, ScrollView, Text, View } from "react-native";
 import { ProductCard } from "./AllStoreProducts.jsx";
 
-export default function AllTopProductsScreen() {
+export default function AllTopProductsScreen({ navigation }) {
   const { data: topProducts, isLoadingProduct } = useQuery({
     queryKey: ["topProducts"],
     queryFn: () => getTopProducts(),
@@ -30,7 +30,10 @@ export default function AllTopProductsScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 8, marginTop: 12 }}
           renderItem={({ item }) => (
-            <ProductCard product={item} />
+            <ProductCard product={item} navigation={navigation} onPress={() => {
+              console.log("pressed")
+              navigation.navigate('ProductDetails', { productDetails: item });
+            }}/>
           )}
           ListEmptyComponent={
             <Text className="text-gray-500 px-2">No stores found</Text>

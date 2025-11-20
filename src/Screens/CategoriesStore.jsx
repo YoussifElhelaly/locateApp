@@ -16,6 +16,7 @@ const CategoriesStore = () => {
     queryKey: ['categories-store', storeId],
     queryFn: () => getCategoriesStore(storeId),
   });
+  console.log(storeCategories)
   return (
     <>
       {/*  */}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
+import CurrencyText from './CurrencyText.jsx';
 
 const SearchCard = ({ product, onPress, onNavigateToLocation }) => {
   const hasDiscount =
@@ -53,20 +54,26 @@ const SearchCard = ({ product, onPress, onNavigateToLocation }) => {
           <View className="flex-row items-center mb-3">
             {hasDiscount ? (
               <View className="flex-row items-center">
-                <Text className="text-green-600 font-bold text-lg mr-2">
-                  {formatPrice(product.product_item_price_after_discount)} EGP
-                </Text>
-                <Text className="text-gray-400 line-through text-sm">
-                  {formatPrice(product.product_item_price)} EGP
-                </Text>
+                <CurrencyText
+                  amount={product.product_item_price_after_discount}
+                  className="text-green-600 font-bold text-lg mr-2"
+                  iconSize={14}
+                />
+                <CurrencyText
+                  amount={product.product_item_price}
+                  className="text-gray-400 line-through text-sm"
+                  iconSize={12}
+                />
                 <View className="ml-2 bg-red-100 px-2 py-1 rounded">
                   <Text className="text-red-600 text-xs font-medium">SALE</Text>
                 </View>
               </View>
             ) : (
-              <Text className="text-gray-900 font-bold text-lg">
-                {formatPrice(product.product_item_price)} EGP
-              </Text>
+              <CurrencyText
+                amount={product.product_item_price}
+                className="text-gray-900 font-bold text-lg"
+                iconSize={14}
+              />
             )}
           </View>
 

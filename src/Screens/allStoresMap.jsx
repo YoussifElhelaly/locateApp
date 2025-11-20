@@ -1,6 +1,7 @@
 import React from "react";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { View, Text, StyleSheet } from "react-native";
+import { Image } from "react-native";
 
 export default function AllStoresMap({ route, navigation }) {
     const { stores } = route.params || {};
@@ -17,21 +18,22 @@ export default function AllStoresMap({ route, navigation }) {
     const initialRegion = {
         latitude: stores[0]?.lat || 0,
         longitude: stores[0]?.long || 0,
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
+
     };
 
     return (
         <View style={styles.container}>
             <MapView style={styles.map} initialRegion={initialRegion} mapType="standard">
-                {stores.map((store, index) => (
+                {stores.map((store, index) => {
+                        console.log(store)
+                    return(
                     <Marker
                         key={index}
                         coordinate={{
-                            latitude: store.lat,
-                            longitude: store.long,
+                            latitude: store.location.lat,
+                            longitude: store.location.long,
                         }}
-                        title={store.product_name}
+                        title={store.store_name}
                     >
                         <Callout
                             onPress={() =>
@@ -42,13 +44,15 @@ export default function AllStoresMap({ route, navigation }) {
                                 })
                             }
                         >
-                            <View style={{ padding: 6 }}>
-                                <Text style={{ fontWeight: "bold" }}>{store.product_name}</Text>
+                            <View className="p-2 items-center">
+                                    <Image source={{ uri: store.img }} className="size-20 rounded-full " />
+
+                                <Text style={{ fontWeight: "bold" }}>{store.store_name}</Text>
                                 <Text>{store.address || "Tap to view products"}</Text>
                             </View>
                         </Callout>
                     </Marker>
-                ))}
+                )})}
             </MapView>
         </View>
     );

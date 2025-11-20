@@ -48,7 +48,7 @@ export default function StoresByType({ id, name }) {
                         width={'80px'}
                         onPress={() =>
                             navigation.navigate('AllStoreProducts', {
-                                storeId: item.store_type_id,
+                                storeId: item.store_id,
                                 CategoryId: item.store_id,
                                 subCategoryId: item.sub_category_id,
                                 typeName: name,

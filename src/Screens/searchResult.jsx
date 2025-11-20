@@ -117,8 +117,8 @@ export default function SearchResult() {
         )}
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('AllStoresMap', {
-              stores: data,
+            navigation.navigate('AllProductsMap', {
+              products: data,
             });
           }}
         >

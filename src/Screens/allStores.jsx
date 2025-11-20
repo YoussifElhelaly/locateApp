@@ -4,7 +4,7 @@ import CategoryComponent from "components/CategoryComponent.jsx";
 import LoadingSpinner from "components/LoadingSpinner.jsx";
 import { getAllStoresByType } from "features/stores/getAllStores";
 import { FlatList, View, Text, TouchableOpacity } from "react-native";
-export default function AllStores({ route }) {
+export default function AllStores({ route,navigation }) {
     const navigate = useNavigation();
 
     const { categoryId, categoryName, isType } = route.params;
@@ -50,7 +50,7 @@ export default function AllStores({ route }) {
                                             storeId: item.store_type_id,
                                             CategoryId: item.store_id,
                                             subCategoryId: item.sub_category_id,
-                                            typeName: name,
+                                          
                                         })
                                     }
                                 />

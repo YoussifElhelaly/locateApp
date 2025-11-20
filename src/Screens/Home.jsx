@@ -10,6 +10,7 @@ import { ProductCard } from "./AllStoreProducts";
 import { getTopProducts } from 'features/products/getTopProducts.js'
 import { useNavigation } from "@react-navigation/native";
 import MapComponent from "components/mapComponent.jsx";
+import { getAds } from "features/ads";
 export default function HomeScreen() {
   const navigation = useNavigation();
 
@@ -22,7 +23,8 @@ export default function HomeScreen() {
     queryFn: () => getTopProducts(),
   });
 
-  console.log(topProducts)
+
+
 
   if (isLoading) {
     return (
@@ -61,7 +63,7 @@ export default function HomeScreen() {
           renderItem={({ item }) => (
             <ProductCard product={item} onPress={ ()=>{
               navigation.navigate('ProductDetails', { productDetails: item });
-            }} />
+            }} navigation={navigation}/>
           )}
           ListEmptyComponent={
             <Text className="text-gray-500 px-2">No stores found</Text>

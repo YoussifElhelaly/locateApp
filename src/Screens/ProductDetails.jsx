@@ -1,5 +1,6 @@
 import { useRoute, useNavigation } from '@react-navigation/native';
 import BackButton from 'components/BackButton.jsx';
+import CurrencyText from 'components/CurrencyText.jsx';
 import { addToCart } from 'features/products/addToCart';
 import React, { useState } from 'react';
 import {
@@ -173,15 +174,15 @@ const ProductDetails = () => {
 
         {/* Price */}
         <View className="flex-row items-center mb-4">
-          <Text className="text-3xl font-bold text-green-600 mr-3">
-            ${currentPrice}
-          </Text>
+          <CurrencyText 
+            amount={currentPrice}
+            className="text-3xl font-bold text-green-600 mr-3"
+          />
           {hasDiscount && (
-            <Text className="text-lg text-gray-400 line-through">
-              $
-              {productDetails.product_item_price &&
-                productDetails.product_item_price}
-            </Text>
+            <CurrencyText 
+              amount={productDetails.product_item_price}
+              className="text-lg text-gray-400 line-through"
+            />
           )}
         </View>
 
@@ -290,7 +291,18 @@ const ProductDetails = () => {
                     ? 'Out of Stock'
                     : isExpired
                       ? 'Product Expired'
-                      : `Add to Cart - $${(parseFloat(currentPrice) * quantity).toFixed(2)}`}
+                      : `Add to Cart - `}
+                  {!isOutOfStock && !isExpired && (
+                    <CurrencyText 
+                    invert={true}
+                    sizq
+
+                      amount={(parseFloat(currentPrice) * quantity).toFixed(2)}
+                      className={`text-lg font-semibold ${
+                        isOutOfStock || isExpired ? 'text-gray-600' : 'text-white'
+                      }`}
+                    />
+                  )}
                 </Text>
               </>
             )}

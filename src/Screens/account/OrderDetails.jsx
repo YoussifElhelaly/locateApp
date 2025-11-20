@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import BackButton from 'components/BackButton.jsx';
+import CurrencyText from 'components/CurrencyText.jsx';
 import { getOrderDetails } from '../../features/account/getOrderDetails';
 
 const OrderDetails = ({ navigation, route }) => {
@@ -136,7 +137,10 @@ const OrderDetails = ({ navigation, route }) => {
             <View key={item.id || index} className="flex-row justify-between py-2 border-b border-gray-100 last:border-b-0">
               <Text className="text-sm text-gray-800">Product ID: {item.pro_id}</Text>
               <Text className="text-sm text-gray-800">Qty: {item.quantity}</Text>
-              <Text className="text-sm text-gray-800">${parseFloat(item.item_cost).toFixed(2)}</Text>
+              <CurrencyText 
+                amount={item.item_cost}
+                className="text-sm text-gray-800"
+              />
             </View>
           ))}
         </View>
@@ -146,15 +150,24 @@ const OrderDetails = ({ navigation, route }) => {
           <View className="space-y-2">
             <View className="flex-row justify-between">
               <Text className="text-base text-gray-600">Items Cost:</Text>
-              <Text className="text-base text-gray-800 font-medium">${parseFloat(order.total_items_cost).toFixed(2)}</Text>
+              <CurrencyText 
+                amount={order.total_items_cost}
+                className="text-base text-gray-800 font-medium"
+              />
             </View>
             <View className="flex-row justify-between">
               <Text className="text-base text-gray-600">Taxes:</Text>
-              <Text className="text-base text-gray-800 font-medium">${parseFloat(order.total_taxes).toFixed(2)}</Text>
+              <CurrencyText 
+                amount={order.total_taxes}
+                className="text-base text-gray-800 font-medium"
+              />
             </View>
             <View className="flex-row justify-between border-t border-gray-200 pt-2 mt-2">
               <Text className="text-lg font-bold text-gray-800">Total:</Text>
-              <Text className="text-lg font-bold text-gray-800">${parseFloat(order.total_cost).toFixed(2)}</Text>
+              <CurrencyText 
+                amount={order.total_cost}
+                className="text-lg font-bold text-gray-800"
+              />
             </View>
           </View>
         </View>

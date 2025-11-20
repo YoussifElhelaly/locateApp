@@ -19,8 +19,7 @@ export default function NavHeader({ route, options }) {
   const insets = useSafeAreaInsets();
   const navigate = useNavigation();
   const user = useSelector(state => state.auth.user);
-  console.log(route)
-  console.log(options)
+
   return (
     <View style={{ paddingTop: insets.top }} className="px-4 bg-mainColor pb-4">
       <View className=" gap-2">

@@ -26,6 +26,7 @@ import OrderDetails from 'Screens/account/OrderDetails.jsx';
 import AllStores from 'Screens/allStores.jsx';
 import AllStoresMap from 'Screens/allStoresMap.jsx';
 import AllTopProductsScreen from 'Screens/allTopProducts.jsx';
+import AllProductsMap from 'Screens/allProductsMap.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -149,6 +150,11 @@ export default function StackNav() {
             name="AllStoresMap"
             component={AllStoresMap}
             options={{ title: 'All Stores' }}
+          />
+          <Stack.Screen
+            name="AllProductsMap"
+            component={AllProductsMap}
+            options={{ title: 'All Products' }}
           />
           <Stack.Screen
             name="AllTopProductsScreen"
