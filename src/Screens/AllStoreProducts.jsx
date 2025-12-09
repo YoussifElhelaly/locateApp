@@ -112,6 +112,7 @@ export const ProductCard = ({ product, onPress ,navigation }) => {
             <Text className="text-white text-xs font-bold">SALE</Text>
           </View>
         )}
+       
       </View>
 
       <Text className="text-gray-800 font-semibold text-sm mb-1">
@@ -154,6 +155,16 @@ export const ProductCard = ({ product, onPress ,navigation }) => {
           )}
         </View>
       </View>
+          <TouchableOpacity
+          className='p-2 bg-mainColor rounded-lg'
+                  onPress={() => {
+                    navigation.navigate('AllProductsMap', {
+                      products: [product],
+                    });
+                  }}
+                >
+                  <Text className="text-white font-medium text-center">View Map </Text>
+                </TouchableOpacity>
     </TouchableOpacity>
   );
 };
